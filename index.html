@@ -31,6 +31,7 @@
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  html { overflow-x: clip; }
   body {
     font-family: 'Nunito', system-ui, sans-serif;
     color: var(--pine);
@@ -40,7 +41,7 @@
   }
 
   /* ===== Bombki (3–10) ===== */
-  .bombki { position: absolute; inset: 0 0 auto 0; height: 0; z-index: 1; pointer-events: none; }
+  .bombki { position: absolute; inset: 0 0 auto 0; height: 360px; overflow: hidden; z-index: 1; pointer-events: none; }
   .bombka {
     position: absolute; top: -20px;
     left: calc(var(--x) - 0.5 * var(--bw, 80px));
@@ -100,6 +101,8 @@
     width: 175px; height: auto;
     filter: drop-shadow(0 8px 8px rgba(0,0,0,.35));
   }
+
+  .myszki { display: none; }
 
   /* ===== Kotek (1) – przyklejony do dołu ekranu ===== */
   .kotek {
@@ -259,12 +262,27 @@
 
   /* ===== Telefony (wersja tymczasowa – dopracujemy osobno) ===== */
   @media (max-width: 820px) {
-    :root { --cw: calc(100vw - 24px); }
+    :root { --cw: calc(100% - 24px); }
     body { background-image: url("tlo_telefon.jpg"); background-attachment: scroll; }
     .stage { margin-top: 120px; }
-    .window { padding: 22px 18px 26px; min-height: 0; }
+    .window { padding: 22px 18px 66px; min-height: 0; }
     .frame { padding: 14px; border-radius: 22px; }
-    .kotek, .piesek, .b3, .b5, .b7, .b9 { display: none; }
+    .kotek, .b3, .b5, .b7, .b9 { display: none; }
+    .spark { width: 54px; height: 54px; }
+    .spark-small { width: 40px; height: 40px; flex-basis: 40px; }
+    .spark-big { width: 80px; height: 80px; }
+    /* piesek (moduł 1) i myszki (ankieta): dół-lewo, nachodzą tylko na ramkę */
+    .piesek, .myszki {
+      position: absolute; z-index: 5; top: auto; right: auto; left: -10px;
+      filter: drop-shadow(0 6px 6px rgba(0,0,0,.35));
+      transition: opacity .4s; pointer-events: none;
+    }
+    .piesek { display: block; width: 116px; bottom: -153px; }
+    .myszki { display: block; width: 174px; height: auto; bottom: -112px; opacity: 0; }
+    body.on-form .piesek { opacity: 0; }
+    body.on-form .myszki { opacity: 1; }
+    footer { margin-top: 60px; padding-left: 172px; text-align: left; line-height: 1.5; }
+    .stage { margin-bottom: 110px; }
     .bombka { transform: scale(.75); }
     .chips { grid-template-columns: 1fr 1fr; }
     .nav { justify-content: stretch; }
@@ -292,12 +310,15 @@
 
 <main class="stage">
   <!-- 2: piesek na prawym brzegu -->
+
+  <div class="deck">
+  <!-- piesek: na komputerze z prawej, na telefonie na dole z lewej (moduł 1) -->
   <picture>
     <source srcset="piesek.webp" type="image/webp">
     <img class="piesek" src="piesek.gif" alt="" width="175" height="314">
   </picture>
-
-  <div class="deck">
+  <!-- myszki: tylko na telefonie, w modułach z ankietą -->
+  <img class="myszki" src="myszki.webp" alt="" width="450" height="433">
   <!-- Moduł 1: powitanie -->
   <div class="frame card card-intro" id="cardIntro">
     <div class="window">
