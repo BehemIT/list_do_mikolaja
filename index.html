@@ -216,6 +216,14 @@
   .btn.primary:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--red-dark); }
   .btn.ghost { background: transparent; color: var(--green); border: 2px solid var(--line); }
   .btn.ghost:hover { border-color: var(--sage); }
+  .btn[data-prev] {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--pine); color: var(--paper); border: none;
+    box-shadow: 0 5px 0 #0b120f;
+  }
+  .btn[data-prev]:hover { background: var(--green); border: none; }
+  .btn[data-prev]:active { transform: translateY(3px); box-shadow: 0 2px 0 #0b120f; }
+  .chev { width: 9px; height: 15px; flex: 0 0 auto; }
   .btn:disabled { opacity: .7; cursor: wait; }
 
   .error { color: var(--red); font-weight: 700; text-align: center; margin-top: 10px; min-height: 20px; font-size: 14px; }
@@ -343,7 +351,7 @@
             <input type="text" id="name" maxlength="60" placeholder="np. Ciocia Basia" autocomplete="given-name">
           </div>
           <div class="error"></div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
+          <div class="nav"><button type="button" class="btn ghost" data-prev><svg class="chev" viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2 2 8l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
         </section>
 
         <!-- 2: grzeczność -->
@@ -356,7 +364,7 @@
             <div class="naughty"><span>😈 rózga</span><span>aureolka 😇</span></div>
             <div class="verdict" id="verdict"></div>
           </div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
+          <div class="nav"><button type="button" class="btn ghost" data-prev><svg class="chev" viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2 2 8l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
         </section>
 
         <!-- 3: prezenty -->
@@ -372,7 +380,7 @@
             </div>
           </div>
           <div class="error"></div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
+          <div class="nav"><button type="button" class="btn ghost" data-prev><svg class="chev" viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2 2 8l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
         </section>
 
         <!-- 4: wiadomość + przysięga -->
@@ -387,7 +395,7 @@
             </label>
           </div>
           <div class="error"></div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Pokaż mój list</button></div>
+          <div class="nav"><button type="button" class="btn ghost" data-prev><svg class="chev" viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2 2 8l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Wstecz</button><button type="button" class="btn primary" data-next>Pokaż mój list</button></div>
         </section>
 
         <!-- 5: podsumowanie -->
@@ -396,7 +404,7 @@
           <p class="hint">Sprawdź, zanim renifery wystartują. Potem już nie ma odwrotu.</p>
           <div class="body"><dl class="summary" id="summary"></dl></div>
           <div class="error" id="sendError"></div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="submit" class="btn primary" id="sendBtn">Wyślij na Biegun</button></div>
+          <div class="nav"><button type="button" class="btn ghost" data-prev><svg class="chev" viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2 2 8l6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Wstecz</button><button type="submit" class="btn primary" id="sendBtn">Wyślij na Biegun</button></div>
         </section>
 
         <!-- 6: koniec -->
