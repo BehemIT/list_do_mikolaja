@@ -120,13 +120,10 @@
   header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 
   /* ===== Pasek postępu ===== */
-  .progress { visibility: hidden; margin: 6px 0 18px; }
+  .progress { visibility: hidden; margin: 2px 0 14px; }
   .progress.show { visibility: visible; }
   body[data-step="0"] .progress { display: none; }
   body[data-step="0"] header { margin-bottom: 22px; }
-  .track { position: relative; height: 10px; background: #e7dec4; border-radius: 99px; }
-  .bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--amber)); border-radius: 99px; transition: width .4s ease; }
-  .sleigh { position: absolute; top: -18px; font-size: 26px; transition: left .4s ease; transform: translateX(-50%) scaleX(-1); }
   .steplabel { color: var(--muted); font-size: 13px; text-align: center; margin-top: 8px; font-weight: 600; }
 
   /* ===== Kroki ===== */
@@ -139,6 +136,7 @@
 
   .spark { display: block; width: 84px; height: 84px; margin: 0 auto 6px; }
   .spark img { width: 100%; height: 100%; display: block; }
+  .spark-big { width: 110px; height: 110px; margin-bottom: 4px; }
   .nav.nav-center { justify-content: center; }
   .emoji { font-size: 40px; text-align: center; margin-bottom: 2px; }
   h2 { font-family: 'Lobster', cursive; font-weight: 400; color: var(--green); font-size: 32px; text-align: center; margin: 0 0 6px; line-height: 1.15; }
@@ -300,13 +298,13 @@
             <p>W tym roku Mikołaj przeszedł cyfryzację. Elfy nie nadążały z odczytywaniem odręcznego pisma.</p>
             <p>To aplikacja, dzięki której podzielisz się z Mikołajem swoimi prezentowymi marzeniami.</p>
             <ul class="rules">
-              <li>📝 Kilka krótkich pytań, ok. 3 minuty</li>
-              <li>🔁 Ankietę możesz wypełnić kilka razy – np. gdy przypomni Ci się kolejny prezent</li>
-              <li>🔍 Kłamstwa wykrywa specjalny elf-wariograf</li>
-              <li>⏰ Listy przyjmujemy do 10 grudnia</li>
+              <li>Kilka krótkich pytań, ok. 3 minuty</li>
+              <li>Ankietę możesz wypełnić kilka razy – np. gdy przypomni Ci się kolejny prezent</li>
+              <li>Kłamstwa wykrywa specjalny elf-wariograf</li>
+              <li>Listy przyjmujemy do 10 grudnia</li>
             </ul>
           </div>
-          <div class="nav nav-center"><button type="button" class="btn primary" data-next>Zaczynamy! 🎄</button></div>
+          <div class="nav nav-center"><button type="button" class="btn primary" data-next>Zaczynamy!</button></div>
         </section>
     </div>
   </div>
@@ -320,8 +318,7 @@
       </header>
 
       <div class="progress" id="progress">
-        <div class="track"><div class="bar" id="bar"></div><div class="sleigh" id="sleigh">🛷</div></div>
-        <div class="steplabel" id="steplabel">&nbsp;</div>
+                <div class="steplabel" id="steplabel">&nbsp;</div>
       </div>
 
       <form id="letter" novalidate>
@@ -333,7 +330,6 @@
 
         <!-- 1: imię -->
         <section class="step" data-title="Kto pisze?">
-          <div class="emoji">✍️</div>
           <h2>Kto pisze?</h2>
           <p class="hint">Imię lub ksywka, pod którą elfy Cię kojarzą.</p>
           <div class="body">
@@ -345,7 +341,6 @@
 
         <!-- 2: grzeczność -->
         <section class="step" data-title="Grzeczność">
-          <div class="emoji">😇😈</div>
           <h2>Jak grzeczny/-a byłeś/-aś?</h2>
           <p class="hint">Uwaga: elfy mają dostęp do nagrań z monitoringu.</p>
           <div class="body">
@@ -359,7 +354,6 @@
 
         <!-- 3: prezenty -->
         <section class="step" data-title="Prezenty">
-          <div class="emoji">🎁</div>
           <h2>Lista prezentów</h2>
           <p class="hint">Od najważniejszego, maksymalnie 8. Pod spodem możesz dopisać sklep albo wkleić link – elfy są leniwe.</p>
           <div class="body">
@@ -372,14 +366,13 @@
 
         <!-- 4: wiadomość + przysięga -->
         <section class="step" data-title="Ostatnie słowo">
-          <div class="emoji">💌</div>
           <h2>Coś jeszcze?</h2>
           <p class="hint">Wiadomość dla Mikołaja, elfów albo Rudolfa.</p>
           <div class="body">
             <textarea id="message" maxlength="600" placeholder="Pozdrowienia dla Rudolfa! Nos jak zawsze świetny."></textarea>
             <label class="check">
               <input type="checkbox" id="oath">
-              <span>Uroczyście przysięgam, że powyższe informacje są prawdziwe, a jeśli nie, to przynajmniej zabawne. ✋</span>
+              <span>Uroczyście przysięgam, że powyższe informacje są prawdziwe, a jeśli nie, to przynajmniej zabawne.</span>
             </label>
           </div>
           <div class="error"></div>
@@ -388,17 +381,16 @@
 
         <!-- 5: podsumowanie -->
         <section class="step" data-title="Sprawdź list">
-          <div class="emoji">📜</div>
           <h2>Twój list</h2>
           <p class="hint">Sprawdź, zanim renifery wystartują. Potem już nie ma odwrotu.</p>
           <div class="body"><dl class="summary" id="summary"></dl></div>
           <div class="error" id="sendError"></div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="submit" class="btn primary" id="sendBtn">Wyślij na Biegun 🛷</button></div>
+          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="submit" class="btn primary" id="sendBtn">Wyślij na Biegun</button></div>
         </section>
 
         <!-- 6: koniec -->
         <section class="step" data-title="Wysłane">
-          <div class="big">🦌📬</div>
+          <picture class="spark spark-big"><source srcset="spark.webp" type="image/webp"><img src="spark.gif" alt="" width="110" height="110"></picture>
           <h2>List dotarł!</h2>
           <div class="body center">
             <p>Renifery właśnie przekazują go do działu rozpatrywania próśb.</p>
@@ -436,13 +428,13 @@
   // ---------- suwak ----------
   const nice = $('nice');
   function verdictFor(v) {
-    if (v < 10) return 'Kategoria: węgiel w skarpecie 🪨';
-    if (v < 30) return 'Rózga już się moczy… 🌿';
-    if (v < 50) return 'Hmm. Elfy zrobiły notatkę. 📝';
-    if (v < 70) return 'Bywało gorzej. Bywało lepiej. 🤷';
-    if (v < 90) return 'Całkiem porządny człowiek! 🎄';
-    if (v < 100) return 'Prawie anioł. Prawie. 😇';
-    return 'Mikołaj w to nie wierzy, ale doceni. 🧐';
+    if (v < 10) return 'Kategoria: węgiel w skarpecie';
+    if (v < 30) return 'Rózga już się moczy…';
+    if (v < 50) return 'Hmm. Elfy zrobiły notatkę.';
+    if (v < 70) return 'Bywało gorzej. Bywało lepiej.';
+    if (v < 90) return 'Całkiem porządny człowiek!';
+    if (v < 100) return 'Prawie anioł. Prawie.';
+    return 'Mikołaj w to nie wierzy, ale doceni.';
   }
   function updateVerdict() {
     $('meter').textContent = nice.value + '%';
@@ -470,7 +462,7 @@
     });
     const full = gifts.children.length >= MAX_GIFTS;
     addBtn.disabled = full;
-    addBtn.textContent = full ? 'To już 8 prezentów – Mikołaj też ma budżet 🎅' : '+ dopisz kolejny prezent';
+    addBtn.textContent = full ? 'To już 8 prezentów – Mikołaj też ma budżet' : '+ dopisz kolejny prezent';
   }
   function addGift() {
     if (gifts.children.length >= MAX_GIFTS) return;
@@ -480,7 +472,7 @@
       <span class="gift-no"></span>
       <div class="gift-fields">
         <input type="text" class="gift-name" maxlength="120">
-        <input type="text" class="gift-info" maxlength="400" placeholder="🔗 sklep albo link (opcjonalnie)">
+        <input type="text" class="gift-info" maxlength="400" placeholder="sklep albo link (opcjonalnie)">
       </div>
       <button type="button" class="gift-del" aria-label="Usuń prezent">✕</button>`;
     const name = row.querySelector('.gift-name');
@@ -525,10 +517,10 @@
     const d = collect();
     const errBox = steps[i].querySelector('.error');
     let msg = '';
-    if (i === 1 && !d.name) msg = 'Mikołaj musi wiedzieć, od kogo jest list! ✍️';
-    if (i === 3 && !d.gifts.length) msg = 'Lista jest pusta. Na pewno niczego nie chcesz? 🤔';
-    else if (i === 3 && d.orphanInfo) msg = 'Jest sklep lub link bez nazwy prezentu – dopisz, co to ma być 🎁';
-    if (i === LAST_Q && !$('oath').checked) msg = 'Najpierw uroczysta przysięga! ✋';
+    if (i === 1 && !d.name) msg = 'Mikołaj musi wiedzieć, od kogo jest list!';
+    if (i === 3 && !d.gifts.length) msg = 'Lista jest pusta. Na pewno niczego nie chcesz?';
+    else if (i === 3 && d.orphanInfo) msg = 'Jest sklep lub link bez nazwy prezentu – dopisz, co to ma być.';
+    if (i === LAST_Q && !$('oath').checked) msg = 'Najpierw uroczysta przysięga!';
     if (errBox) errBox.textContent = msg;
     return !msg;
   }
@@ -573,9 +565,6 @@
     if (current === SUMMARY) buildSummary();
 
     $('progress').classList.toggle('show', current > 0 && current < DONE);
-    const pct = Math.round((current / SUMMARY) * 100);
-    $('bar').style.width = pct + '%';
-    $('sleigh').style.left = Math.max(4, Math.min(96, pct)) + '%';
     $('steplabel').textContent = 'Krok ' + current + ' z ' + SUMMARY + ' · ' + s.dataset.title;
 
     const focusable = s.querySelector('input[type=text], textarea');
@@ -608,7 +597,7 @@
 
     const key = form.access_key.value;
     if (!key || key.startsWith('WKLEJ')) {
-      err.textContent = 'Strona nie ma jeszcze klucza Web3Forms (to wiadomość dla organizatorki 😉).';
+      err.textContent = 'Strona nie ma jeszcze klucza Web3Forms (to wiadomość dla organizatorki).';
       return;
     }
 
@@ -627,7 +616,7 @@
     };
 
     btn.disabled = true;
-    btn.textContent = 'Renifery w drodze… 🦌';
+    btn.textContent = 'Renifery w drodze…';
     try {
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -637,14 +626,14 @@
       const data = await res.json();
       if (!data.success) throw new Error(data.message || 'błąd');
       $('doneNote').textContent = d.nice >= 70
-        ? 'Wstępna ocena: rokowania dobre 🎁'
-        : 'Wstępna ocena: elfy jeszcze się naradzają 🤔';
+        ? 'Wstępna ocena: rokowania dobre.'
+        : 'Wstępna ocena: elfy jeszcze się naradzają.';
       go(DONE);
     } catch (ex) {
-      err.textContent = 'Zamieć śnieżna! List nie doleciał. Spróbuj jeszcze raz za chwilę. 🌨️';
+      err.textContent = 'Zamieć śnieżna! List nie doleciał. Spróbuj jeszcze raz za chwilę.';
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Wyślij na Biegun 🛷';
+      btn.textContent = 'Wyślij na Biegun';
     }
   });
 
