@@ -173,6 +173,10 @@
   .gift .gift-info { font-size: 14px; color: var(--muted); border-top: 1px dashed var(--line); border-radius: 0 0 8px 8px; }
   .gift-del { flex: 0 0 36px; height: 36px; margin-top: 3px; border: none; border-radius: 10px; background: #ebe2c8; color: var(--green); font-size: 16px; cursor: pointer; }
   .gift-del:hover { background: var(--ribbon); }
+  .sweet-note { display: flex; align-items: center; gap: 12px; margin: 16px auto 0; max-width: 520px; color: var(--muted); font-size: 14px; }
+  .sweet-note p { margin: 0; }
+  .sweet-note b { color: var(--red); }
+  .spark-small { width: 46px; height: 46px; margin: 0; flex: 0 0 46px; }
   .add-gift:disabled { border-style: solid; opacity: .75; cursor: default; }
   .summary dd { overflow-wrap: anywhere; }
   .add-gift {
@@ -240,6 +244,9 @@
     .progress { margin: 4px 0 12px; }
     .nav { margin-top: 16px; }
     textarea { min-height: 90px; }
+    .gift { padding: 4px 8px; margin-bottom: 6px; }
+    .gift input[type=text] { padding: 6px; }
+    .sweet-note { margin-top: 10px; font-size: 13px; }
   }
 
   /* ===== Telefony (wersja tymczasowa – dopracujemy osobno) ===== */
@@ -359,6 +366,10 @@
           <div class="body">
             <div id="gifts"></div>
             <button type="button" class="add-gift" id="addGift">+ dopisz kolejny prezent</button>
+            <div class="sweet-note">
+              <picture class="spark spark-small"><source srcset="spark.webp" type="image/webp"><img src="spark.gif" alt="" width="46" height="46"></picture>
+              <p><b>Uwaga od elfów:</b> słodycze się nie liczą! Czekoladki, pierniczki i cukierki Mikołaj i tak przynosi hurtowo. Wpisz coś, czego nie da się zjeść w pięć minut.</p>
+            </div>
           </div>
           <div class="error"></div>
           <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
