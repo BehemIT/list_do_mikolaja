@@ -34,7 +34,7 @@
   body {
     font-family: 'Nunito', system-ui, sans-serif;
     color: var(--pine);
-    background: var(--bordo) url("img/tlo_desktop.jpg") center / cover fixed no-repeat;
+    background: var(--bordo) url("tlo_desktop.jpg") center / cover fixed no-repeat;
     min-height: 100vh;
     overflow-x: hidden;
   }
@@ -75,6 +75,24 @@
     box-shadow: inset 0 0 0 2px rgba(43,60,50,.15);
   }
 
+
+  /* ===== Dwa moduły nałożone na siebie ===== */
+  .deck { display: grid; position: relative; z-index: 1; }
+  .deck > .card { grid-area: 1 / 1; display: flex; flex-direction: column; }
+  .deck > .card > .window { flex: 1; }
+  .card-intro { z-index: 1; }
+  .card-intro .step.intro { display: flex; animation: none; }
+  .card-form {
+    z-index: 2; visibility: hidden; opacity: 0; pointer-events: none;
+    transform: translateY(70px);
+    transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .45s, visibility 0s linear .7s;
+  }
+  body.on-form .card-form {
+    visibility: visible; opacity: 1; pointer-events: auto; transform: none;
+    transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .35s, visibility 0s;
+  }
+  body.on-form .card-intro { visibility: hidden; transition: visibility 0s linear .7s; }
+
   /* ===== Piesek (2) ===== */
   .piesek {
     position: absolute; z-index: 3;
@@ -104,6 +122,8 @@
   /* ===== Pasek postępu ===== */
   .progress { visibility: hidden; margin: 6px 0 18px; }
   .progress.show { visibility: visible; }
+  body[data-step="0"] .progress { display: none; }
+  body[data-step="0"] header { margin-bottom: 22px; }
   .track { position: relative; height: 10px; background: #e7dec4; border-radius: 99px; }
   .bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--amber)); border-radius: 99px; transition: width .4s ease; }
   .sleigh { position: absolute; top: -18px; font-size: 26px; transition: left .4s ease; transform: translateX(-50%) scaleX(-1); }
@@ -117,6 +137,9 @@
   @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: none; } }
   @keyframes slideBack { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: none; } }
 
+  .spark { display: block; width: 84px; height: 84px; margin: 0 auto 6px; }
+  .spark img { width: 100%; height: 100%; display: block; }
+  .nav.nav-center { justify-content: center; }
   .emoji { font-size: 40px; text-align: center; margin-bottom: 2px; }
   h2 { font-family: 'Lobster', cursive; font-weight: 400; color: var(--green); font-size: 32px; text-align: center; margin: 0 0 6px; line-height: 1.15; }
   .hint { font-size: 15px; color: var(--muted); text-align: center; margin: 0 0 18px; }
@@ -134,10 +157,26 @@
   .meter { text-align: center; font-size: 56px; font-weight: 800; color: var(--green); line-height: 1; margin: 6px 0; }
   .verdict { text-align: center; font-weight: 800; min-height: 24px; color: var(--red); }
 
-  .gift-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  .gift-row input { flex: 1; }
-  .gift-row button { flex: 0 0 46px; border: none; border-radius: 12px; background: #ebe2c8; color: var(--green); font-size: 18px; cursor: pointer; }
-  .gift-row button:hover { background: var(--ribbon); }
+  .gift {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: #fffdf6; border: 2px solid var(--line); border-radius: 14px;
+    padding: 8px; margin-bottom: 8px;
+  }
+  .gift:focus-within { border-color: var(--sage); }
+  .gift-no {
+    flex: 0 0 30px; height: 30px; margin-top: 6px; border-radius: 50%;
+    background: var(--red); color: var(--paper); font-weight: 800; font-size: 14px;
+    display: grid; place-items: center;
+  }
+  .gift-fields { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .gift input[type=text] { border: none; background: transparent; padding: 8px 6px; border-radius: 8px; }
+  .gift input[type=text]:focus { box-shadow: none; background: rgba(164,173,121,.15); }
+  .gift .gift-name { font-weight: 600; }
+  .gift .gift-info { font-size: 14px; color: var(--muted); border-top: 1px dashed var(--line); border-radius: 0 0 8px 8px; }
+  .gift-del { flex: 0 0 36px; height: 36px; margin-top: 3px; border: none; border-radius: 10px; background: #ebe2c8; color: var(--green); font-size: 16px; cursor: pointer; }
+  .gift-del:hover { background: var(--ribbon); }
+  .add-gift:disabled { border-style: solid; opacity: .75; cursor: default; }
+  .summary dd { overflow-wrap: anywhere; }
   .add-gift {
     border: 2px dashed var(--olive); background: transparent; color: var(--green);
     padding: 11px 14px; border-radius: 12px; font: inherit; font-weight: 800; cursor: pointer; width: 100%;
@@ -181,14 +220,14 @@
 
   .center { text-align: center; }
   .intro .body p { margin: 0 0 12px; text-align: center; font-size: 17px; }
-  .rules { background: rgba(164,173,121,.25); border: 2px solid rgba(118,132,96,.35); border-radius: 14px; padding: 12px 18px 12px 34px; margin: 6px auto 4px; font-size: 15px; max-width: 440px; }
+  .rules { background: rgba(164,173,121,.25); border: 2px solid rgba(118,132,96,.35); border-radius: 14px; padding: 12px 18px 12px 34px; margin: 6px auto 4px; font-size: 15px; max-width: 540px; }
   .rules li { margin: 5px 0; }
 
   .big { font-size: 72px; text-align: center; animation: kiw 2s ease-in-out infinite; }
   @keyframes kiw { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 
   .hidden-trap { display: none !important; }
-  footer { text-align: center; color: rgba(246,240,221,.7); font-size: 12px; margin-top: 16px; }
+  footer { text-align: center; color: rgba(246,240,221,.7); font-size: 12px; margin-top: 34px; }
 
   /* ===== Niskie ekrany laptopów (np. 1366×768) ===== */
   @media (min-width: 821px) and (max-height: 880px) {
@@ -196,6 +235,7 @@
     .window { padding: 20px 40px 24px; min-height: 0; }
     header { margin-bottom: 6px; }
     header p, .emoji { display: none; }
+    body[data-step="0"] header p, body[data-step="0"] .emoji { display: block; }
     h1 { font-size: 38px; }
     h2 { font-size: 28px; }
     .hint { margin-bottom: 12px; }
@@ -207,7 +247,7 @@
   /* ===== Telefony (wersja tymczasowa – dopracujemy osobno) ===== */
   @media (max-width: 820px) {
     :root { --cw: calc(100vw - 24px); }
-    body { background-image: url("img/tlo_telefon.jpg"); background-attachment: scroll; }
+    body { background-image: url("tlo_telefon.jpg"); background-attachment: scroll; }
     .stage { margin-top: 120px; }
     .window { padding: 22px 18px 26px; min-height: 0; }
     .frame { padding: 14px; border-radius: 22px; }
@@ -219,6 +259,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .bombka, .big, .step.active { animation: none !important; }
+    .card-intro, .card-form { transition: none !important; }
   }
 </style>
 </head>
@@ -226,24 +267,52 @@
 
 <!-- 3–10: bombki wiszące u góry -->
 <div class="bombki" aria-hidden="true">
-  <img class="bombka b3" src="img/bombki/bombka_12_kwiaty.svg" alt="" width="56" height="313" style="--x:3.5%;--bw:56px;--d:4.6s;--del:-0.0s">
-  <img class="bombka b4" src="img/bombki/bombka_04_galazka.svg" alt="" width="97" height="212" style="--x:11%;--bw:97px;--d:3.9s;--del:-0.7s">
-  <img class="bombka b5" src="img/bombki/bombka_08_zolte_paski.svg" alt="" width="69" height="279" style="--x:21%;--bw:69px;--d:5.2s;--del:-1.4s">
-  <img class="bombka b6" src="img/bombki/bombka_03_czerwone_romby.svg" alt="" width="87" height="161" style="--x:40%;--bw:87px;--d:4.3s;--del:-2.1s">
-  <img class="bombka b7" src="img/bombki/bombka_02_gwiazda_czerwona.svg" alt="" width="102" height="143" style="--x:56.5%;--bw:102px;--d:3.6s;--del:-2.8s">
-  <img class="bombka b8" src="img/bombki/bombka_05_paski_ziel_czerw.svg" alt="" width="94" height="159" style="--x:65.5%;--bw:94px;--d:4.8s;--del:-0.5s">
-  <img class="bombka b9" src="img/bombki/bombka_07_zielona_kropki.svg" alt="" width="81" height="242" style="--x:85%;--bw:81px;--d:4.1s;--del:-1.2s">
-  <img class="bombka b10" src="img/bombki/bombka_09_czerwony_sopel.svg" alt="" width="51" height="229" style="--x:96%;--bw:51px;--d:5.5s;--del:-1.9s">
+  <img class="bombka b3" src="bombka_12_kwiaty.svg" alt="" width="56" height="313" style="--x:3.5%;--bw:56px;--d:4.6s;--del:-0.0s">
+  <img class="bombka b4" src="bombka_04_galazka.svg" alt="" width="97" height="212" style="--x:11%;--bw:97px;--d:3.9s;--del:-0.7s">
+  <img class="bombka b5" src="bombka_08_zolte_paski.svg" alt="" width="69" height="279" style="--x:21%;--bw:69px;--d:5.2s;--del:-1.4s">
+  <img class="bombka b6" src="bombka_03_czerwone_romby.svg" alt="" width="87" height="161" style="--x:40%;--bw:87px;--d:4.3s;--del:-2.1s">
+  <img class="bombka b7" src="bombka_02_gwiazda_czerwona.svg" alt="" width="102" height="143" style="--x:56.5%;--bw:102px;--d:3.6s;--del:-2.8s">
+  <img class="bombka b8" src="bombka_05_paski_ziel_czerw.svg" alt="" width="94" height="159" style="--x:65.5%;--bw:94px;--d:4.8s;--del:-0.5s">
+  <img class="bombka b9" src="bombka_07_zielona_kropki.svg" alt="" width="81" height="242" style="--x:85%;--bw:81px;--d:4.1s;--del:-1.2s">
+  <img class="bombka b10" src="bombka_09_czerwony_sopel.svg" alt="" width="51" height="229" style="--x:96%;--bw:51px;--d:5.5s;--del:-1.9s">
 </div>
 
 <main class="stage">
   <!-- 2: piesek na prawym brzegu -->
   <picture>
-    <source srcset="img/piesek.webp" type="image/webp">
-    <img class="piesek" src="img/piesek.gif" alt="" width="175" height="314">
+    <source srcset="piesek.webp" type="image/webp">
+    <img class="piesek" src="piesek.gif" alt="" width="175" height="314">
   </picture>
 
-  <div class="frame">
+  <div class="deck">
+  <!-- Moduł 1: powitanie -->
+  <div class="frame card card-intro" id="cardIntro">
+    <div class="window">
+      <header>
+        <h1>List do Mikołaja</h1>
+        <p>Oficjalna Skrzynka Pocztowa Bieguna Północnego · oddział rodzinny</p>
+      </header>
+
+      <!-- 0: start -->
+        <section class="step intro" data-title="Start">
+          <picture class="spark"><source srcset="spark.webp" type="image/webp"><img src="spark.gif" alt="" width="84" height="84"></picture>
+          <div class="body">
+            <p>W tym roku Mikołaj przeszedł cyfryzację. Elfy nie nadążały z odczytywaniem odręcznego pisma.</p>
+            <p>To aplikacja, dzięki której podzielisz się z Mikołajem swoimi prezentowymi marzeniami.</p>
+            <ul class="rules">
+              <li>📝 Kilka krótkich pytań, ok. 3 minuty</li>
+              <li>🔁 Ankietę możesz wypełnić kilka razy – np. gdy przypomni Ci się kolejny prezent</li>
+              <li>🔍 Kłamstwa wykrywa specjalny elf-wariograf</li>
+              <li>⏰ Listy przyjmujemy do 10 grudnia</li>
+            </ul>
+          </div>
+          <div class="nav nav-center"><button type="button" class="btn primary" data-next>Zaczynamy! 🎄</button></div>
+        </section>
+    </div>
+  </div>
+
+  <!-- Moduł 2: ankieta (nakłada się na moduł 1) -->
+  <div class="frame card card-form" id="cardForm" inert>
     <div class="window">
       <header>
         <h1>List do Mikołaja</h1>
@@ -261,20 +330,6 @@
         <!-- ============================================= -->
         <input type="checkbox" name="botcheck" class="hidden-trap" tabindex="-1" autocomplete="off">
 
-        <!-- 0: start -->
-        <section class="step intro" data-title="Start">
-          <div class="emoji">📬</div>
-          <h2>Ho ho ho!</h2>
-          <div class="body">
-            <p>W tym roku Mikołaj przeszedł cyfryzację. Elfy nie nadążały z odczytywaniem odręcznego pisma.</p>
-            <ul class="rules">
-              <li>📝 Kilka krótkich pytań, ok. 3 minuty</li>
-              <li>🔍 Kłamstwa wykrywa specjalny elf-wariograf</li>
-              <li>⏰ Listy przyjmujemy do Wigilii</li>
-            </ul>
-          </div>
-          <div class="nav"><button type="button" class="btn primary" data-next>Zaczynamy! 🎄</button></div>
-        </section>
 
         <!-- 1: imię -->
         <section class="step" data-title="Kto pisze?">
@@ -302,22 +357,11 @@
           <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
         </section>
 
-        <!-- 3: usprawiedliwienie -->
-        <section class="step" data-title="Linia obrony">
-          <div class="emoji">🧾</div>
-          <h2>Okoliczności łagodzące</h2>
-          <p class="hint">Masz coś na swoje usprawiedliwienie? Mikołaj czyta wszystko, zwłaszcza drobny druk.</p>
-          <div class="body">
-            <textarea id="excuse" maxlength="600" placeholder="np. Zjadłam ostatni pierniczek, ale to była sprawa wyższej konieczności."></textarea>
-          </div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
-        </section>
-
-        <!-- 4: prezenty -->
+        <!-- 3: prezenty -->
         <section class="step" data-title="Prezenty">
           <div class="emoji">🎁</div>
           <h2>Lista prezentów</h2>
-          <p class="hint">Od najważniejszego. Linki mile widziane, elfy są leniwe.</p>
+          <p class="hint">Od najważniejszego, maksymalnie 8. Pod spodem możesz dopisać sklep albo wkleić link – elfy są leniwe.</p>
           <div class="body">
             <div id="gifts"></div>
             <button type="button" class="add-gift" id="addGift">+ dopisz kolejny prezent</button>
@@ -326,25 +370,7 @@
           <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
         </section>
 
-        <!-- 5: łapówki -->
-        <section class="step" data-title="Dla Mikołaja">
-          <div class="emoji">🍪</div>
-          <h2>Co zostawisz przy choince?</h2>
-          <p class="hint">To nie łapówka. To „wyraz uznania”. Można zaznaczyć kilka.</p>
-          <div class="body">
-            <div class="chips" id="bribes">
-              <label class="chip"><input type="checkbox" value="pierniczki"><span><b>🍪</b>pierniczki</span></label>
-              <label class="chip"><input type="checkbox" value="mleko"><span><b>🥛</b>mleko</span></label>
-              <label class="chip"><input type="checkbox" value="mandarynki"><span><b>🍊</b>mandarynki</span></label>
-              <label class="chip"><input type="checkbox" value="marchewka dla reniferów"><span><b>🥕</b>marchewka dla reniferów</span></label>
-              <label class="chip"><input type="checkbox" value="nalewka babci"><span><b>🥃</b>nalewka babci</span></label>
-              <label class="chip"><input type="checkbox" value="nic, liczę na łaskę"><span><b>🙏</b>nic, liczę na łaskę</span></label>
-            </div>
-          </div>
-          <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Dalej</button></div>
-        </section>
-
-        <!-- 6: wiadomość + przysięga -->
+        <!-- 4: wiadomość + przysięga -->
         <section class="step" data-title="Ostatnie słowo">
           <div class="emoji">💌</div>
           <h2>Coś jeszcze?</h2>
@@ -360,7 +386,7 @@
           <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="button" class="btn primary" data-next>Pokaż mój list</button></div>
         </section>
 
-        <!-- 7: podsumowanie -->
+        <!-- 5: podsumowanie -->
         <section class="step" data-title="Sprawdź list">
           <div class="emoji">📜</div>
           <h2>Twój list</h2>
@@ -370,7 +396,7 @@
           <div class="nav"><button type="button" class="btn ghost" data-prev>← Wstecz</button><button type="submit" class="btn primary" id="sendBtn">Wyślij na Biegun 🛷</button></div>
         </section>
 
-        <!-- 8: koniec -->
+        <!-- 6: koniec -->
         <section class="step" data-title="Wysłane">
           <div class="big">🦌📬</div>
           <h2>List dotarł!</h2>
@@ -383,12 +409,13 @@
       </form>
     </div>
   </div>
+  </div><!-- /deck -->
 
   <footer>Strona obsługiwana przez zespół wykwalifikowanych elfów · ilustracja pieska: mamormo</footer>
 </main>
 
 <!-- 1: kotek z choinką, przyklejony do dołu ekranu -->
-<img class="kotek" src="img/kot_z_choinka.webp" alt="" width="721" height="937">
+<img class="kotek" src="kot_z_choinka.webp" alt="" width="721" height="937">
 
 <script>
   const $ = id => document.getElementById(id);
@@ -433,39 +460,64 @@
     'np. książka, którą przeczytam za 3 lata',
     'np. skarpetki (tak, naprawdę)'
   ];
-  function addGift() {
-    if (gifts.children.length >= 15) return;
-    const row = document.createElement('div');
-    row.className = 'gift-row';
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.maxLength = 200;
-    input.placeholder = placeholders[gifts.children.length % placeholders.length];
-    input.setAttribute('aria-label', 'Prezent ' + (gifts.children.length + 1));
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const i = addGift(); if (i) i.focus(); } });
-    const del = document.createElement('button');
-    del.type = 'button';
-    del.textContent = '✕';
-    del.setAttribute('aria-label', 'Usuń prezent');
-    del.onclick = () => { if (gifts.children.length > 1) row.remove(); else input.value = ''; };
-    row.append(input, del);
-    gifts.appendChild(row);
-    return input;
+  const MAX_GIFTS = 8;
+  const addBtn = $('addGift');
+  function renumber() {
+    [...gifts.children].forEach((row, i) => {
+      row.querySelector('.gift-no').textContent = i + 1;
+      row.querySelector('.gift-name').setAttribute('aria-label', 'Prezent ' + (i + 1));
+      row.querySelector('.gift-info').setAttribute('aria-label', 'Sklep lub link do prezentu ' + (i + 1));
+    });
+    const full = gifts.children.length >= MAX_GIFTS;
+    addBtn.disabled = full;
+    addBtn.textContent = full ? 'To już 8 prezentów – Mikołaj też ma budżet 🎅' : '+ dopisz kolejny prezent';
   }
-  function resetGifts() { gifts.innerHTML = ''; addGift(); addGift(); addGift(); }
+  function addGift() {
+    if (gifts.children.length >= MAX_GIFTS) return;
+    const row = document.createElement('div');
+    row.className = 'gift';
+    row.innerHTML = `
+      <span class="gift-no"></span>
+      <div class="gift-fields">
+        <input type="text" class="gift-name" maxlength="120">
+        <input type="text" class="gift-info" maxlength="400" placeholder="🔗 sklep albo link (opcjonalnie)">
+      </div>
+      <button type="button" class="gift-del" aria-label="Usuń prezent">✕</button>`;
+    const name = row.querySelector('.gift-name');
+    name.placeholder = placeholders[gifts.children.length % placeholders.length];
+    name.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); row.querySelector('.gift-info').focus(); } });
+    row.querySelector('.gift-info').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); const i = addGift(); if (i) i.focus(); }
+    });
+    row.querySelector('.gift-del').onclick = () => {
+      if (gifts.children.length > 1) row.remove();
+      else row.querySelectorAll('input').forEach(i => i.value = '');
+      renumber();
+    };
+    gifts.appendChild(row);
+    renumber();
+    return name;
+  }
+  function resetGifts() { gifts.innerHTML = ''; addGift(); addGift(); }
   resetGifts();
-  $('addGift').onclick = () => { const i = addGift(); if (i) i.focus(); };
+  addBtn.onclick = () => { const i = addGift(); if (i) i.focus(); };
 
   // ---------- zbieranie danych ----------
   function collect() {
     return {
       name: $('name').value.trim(),
       nice: +nice.value,
-      excuse: $('excuse').value.trim(),
-      gifts: [...gifts.querySelectorAll('input')].map(i => i.value.trim()).filter(Boolean),
-      bribes: [...document.querySelectorAll('#bribes input:checked')].map(i => i.value),
+      gifts: [...gifts.children].map(r => ({
+        name: r.querySelector('.gift-name').value.trim(),
+        info: r.querySelector('.gift-info').value.trim()
+      })).filter(g => g.name),
+      orphanInfo: [...gifts.children].some(r => !r.querySelector('.gift-name').value.trim() && r.querySelector('.gift-info').value.trim()),
       message: $('message').value.trim()
     };
+  }
+  function giftLines(list, escape) {
+    const f = escape ? esc : (s => s);
+    return list.map((g, i) => (i + 1) + '. ' + f(g.name) + (g.info ? '\n    ↳ ' + f(g.info) : '')).join('\n');
   }
 
   // ---------- walidacja ----------
@@ -474,7 +526,8 @@
     const errBox = steps[i].querySelector('.error');
     let msg = '';
     if (i === 1 && !d.name) msg = 'Mikołaj musi wiedzieć, od kogo jest list! ✍️';
-    if (i === 4 && !d.gifts.length) msg = 'Lista jest pusta. Na pewno niczego nie chcesz? 🤔';
+    if (i === 3 && !d.gifts.length) msg = 'Lista jest pusta. Na pewno niczego nie chcesz? 🤔';
+    else if (i === 3 && d.orphanInfo) msg = 'Jest sklep lub link bez nazwy prezentu – dopisz, co to ma być 🎁';
     if (i === LAST_Q && !$('oath').checked) msg = 'Najpierw uroczysta przysięga! ✋';
     if (errBox) errBox.textContent = msg;
     return !msg;
@@ -486,11 +539,9 @@
     const d = collect();
     const rows = [
       ['Od', esc(d.name), 1],
+      ['Prezenty', giftLines(d.gifts, true), 3],
       ['Grzeczność', d.nice + '% · ' + esc(verdictFor(d.nice)), 2],
-      ['Okoliczności łagodzące', esc(d.excuse || 'brak komentarza'), 3],
-      ['Prezenty', d.gifts.map((g, i) => (i + 1) + '. ' + esc(g)).join('\n'), 4],
-      ['Przy choince', esc(d.bribes.length ? d.bribes.join(', ') : 'nic (odważnie!)'), 5],
-      ['Wiadomość', esc(d.message || '—'), 6]
+      ['Wiadomość', esc(d.message || '—'), 4]
     ];
     $('summary').innerHTML = rows.map(([t, v, s]) =>
       `<div><dt>${t} <button type="button" class="edit" data-goto="${s}">zmień</button></dt><dd>${v}</dd></div>`
@@ -502,9 +553,19 @@
   });
 
   // ---------- nawigacja ----------
+  const cardIntro = $('cardIntro'), cardForm = $('cardForm');
   function go(i, backwards) {
-    steps[current].classList.remove('active', 'back');
+    // przy powrocie do powitania zostaw pytanie widoczne, aż moduł zjedzie
+    if (i !== 0) steps[current].classList.remove('active', 'back');
     current = i;
+    document.body.dataset.step = current;
+    const onForm = current > 0;
+    document.body.classList.toggle('on-form', onForm);
+    cardIntro.inert = onForm;
+    cardForm.inert = !onForm;
+    // po zmianie kroku wróć na górę strony, jeśli ktoś zjechał w dół (np. po długiej liście prezentów)
+    const top = document.querySelector('.deck').getBoundingClientRect().top;
+    if (window.scrollY > 0 && top < 120) window.scrollTo({ top: 0, behavior: 'smooth' });
     const s = steps[current];
     s.classList.toggle('back', !!backwards);
     s.classList.add('active');
@@ -559,10 +620,8 @@
       subject: '🎅 List do Mikołaja – ' + d.name + ' (' + d.gifts.length + ' ' + giftWord(d.gifts.length) + ')',
       from_name: 'Poczta Mikołaja 🦌',
       '👤 Od kogo': d.name,
-      '🎁 Lista prezentów': d.gifts.map((g, i) => (i + 1) + '. ' + g).join('\n'),
+      '🎁 Lista prezentów': giftLines(d.gifts, false),
       '😇 Grzeczność': d.nice + '% – ' + verdictFor(d.nice),
-      '🧾 Okoliczności łagodzące': d.excuse || '(brak komentarza)',
-      '🍪 Dla Mikołaja przy choince': d.bribes.length ? d.bribes.join(', ') : 'nic (odważnie!)',
       '💌 Wiadomość': d.message || '(brak)',
       '📅 Wysłano': sent
     };
