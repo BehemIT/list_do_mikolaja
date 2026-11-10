@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>List do Mikołaja 🎅</title>
 <meta name="description" content="Oficjalna Skrzynka Pocztowa Mikołaja. Elfy czekają.">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
@@ -141,6 +142,10 @@
   .spark img { width: 100%; height: 100%; display: block; }
   .spark-big { width: 110px; height: 110px; margin-bottom: 4px; }
   .nav.nav-center { justify-content: center; }
+  .gate { max-width: 420px; margin: 16px auto 0; text-align: center; }
+  .gate label { display: block; font-weight: 800; color: var(--green); margin-bottom: 8px; }
+  .gate input { text-align: center; }
+  #gateError { margin-top: 8px; }
   .emoji { font-size: 40px; text-align: center; margin-bottom: 2px; }
   h2 { font-family: 'Lobster', cursive; font-weight: 400; color: var(--green); font-size: 32px; text-align: center; margin: 0 0 6px; line-height: 1.15; }
   .hint { font-size: 15px; color: var(--muted); text-align: center; margin: 0 0 18px; }
@@ -258,6 +263,16 @@
     .gift { padding: 4px 8px; margin-bottom: 6px; }
     .gift input[type=text] { padding: 6px; }
     .sweet-note { margin-top: 10px; font-size: 13px; }
+    body[data-step="0"] header { margin-bottom: 6px; }
+    .card-intro .spark { width: 50px; height: 50px; margin-bottom: 4px; }
+    .intro .body p { margin: 0 0 8px; font-size: 15px; }
+    .rules { margin: 4px auto 0; padding: 8px 16px 8px 32px; font-size: 14px; }
+    .rules li { margin: 2px 0; }
+    .gate { margin-top: 12px; }
+    .gate label { margin-bottom: 6px; }
+    .gate input { padding: 10px 14px; }
+    #gateError { margin-top: 4px; min-height: 18px; }
+    .card-intro .nav { margin-top: 8px; }
   }
 
   /* ===== Telefony (wersja tymczasowa – dopracujemy osobno) ===== */
@@ -340,7 +355,12 @@
               <li>Listy przyjmujemy do 10 grudnia</li>
             </ul>
           </div>
-          <div class="nav nav-center"><button type="button" class="btn primary" data-next>Zaczynamy!</button></div>
+          <div class="gate">
+            <label for="familyCode">Hasło rodzinne: jak ma na imię elf programista?</label>
+            <input type="text" id="familyCode" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="40" placeholder="Wpisz imię elfa">
+          </div>
+          <div class="error" id="gateError" role="alert"></div>
+          <div class="nav nav-center"><button type="button" class="btn primary" id="startBtn">Zaczynamy!</button></div>
         </section>
     </div>
   </div>
@@ -358,9 +378,6 @@
       </div>
 
       <form id="letter" novalidate>
-        <!-- ===== TU WKLEJ SWÓJ KLUCZ Z WEB3FORMS ===== -->
-        <input type="hidden" name="access_key" value="fb69b96b-5659-419f-a695-ba8f8488d654">
-        <!-- ============================================= -->
         <input type="checkbox" name="botcheck" class="hidden-trap" tabindex="-1" autocomplete="off">
 
 
@@ -450,6 +467,11 @@
 <img class="kotek" src="kot_z_choinka.webp" alt="" width="721" height="937">
 
 <script>
+  // ===== ADRES WORKERA NA CLOUDFLARE (wklej swój, bez ukośnika na końcu) =====
+  const WORKER_URL = 'https://list-do-mikolaja.ewawas-pan.workers.dev';
+  // ===========================================================================
+  const WORKER_READY = !WORKER_URL.includes('WKLEJ');
+
   const $ = id => document.getElementById(id);
   const steps = [...document.querySelectorAll('.step')];
   const LAST_Q = steps.length - 3;
@@ -619,11 +641,33 @@
     if (e.key === 'Enter') { e.preventDefault(); if (validate(1)) go(2); }
   });
 
-  function giftWord(n) {
-    if (n === 1) return 'prezent';
-    const r10 = n % 10, r100 = n % 100;
-    return (r10 >= 2 && r10 <= 4 && (r100 < 12 || r100 > 14)) ? 'prezenty' : 'prezentów';
+  // ---------- hasło rodzinne ----------
+  let familyAnswer = '';
+  const startBtn = $('startBtn'), gateErr = $('gateError'), codeInput = $('familyCode');
+  async function tryStart() {
+    gateErr.textContent = '';
+    const answer = codeInput.value.trim();
+    if (familyAnswer && answer === familyAnswer) { go(1); return; }
+    if (!answer) { gateErr.textContent = 'Najpierw hasło – elfy pilnują wejścia.'; codeInput.focus(); return; }
+    if (!WORKER_READY) { gateErr.textContent = 'Skrzynka nie jest jeszcze podłączona (to wiadomość dla organizatorki).'; return; }
+    startBtn.disabled = true; startBtn.textContent = 'Elfy sprawdzają…';
+    try {
+      const res = await fetch(WORKER_URL + '/check', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answer })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 429) gateErr.textContent = data.error || 'Za dużo prób. Odpocznij chwilę.';
+      else if (data.ok) { familyAnswer = answer; go(1); }
+      else gateErr.textContent = 'Hmm, to nie to imię. Elf programista jest urażony.';
+    } catch (ex) {
+      gateErr.textContent = 'Nie udało się połączyć z Biegunem. Spróbuj za chwilę.';
+    } finally {
+      startBtn.disabled = false; startBtn.textContent = 'Zaczynamy!';
+    }
   }
+  startBtn.addEventListener('click', tryStart);
+  codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); tryStart(); } });
 
   // ---------- wysyłanie ----------
   const form = $('letter');
@@ -635,42 +679,39 @@
     err.textContent = '';
     const d = collect();
 
-    const key = form.access_key.value;
-    if (!key || key.startsWith('WKLEJ')) {
-      err.textContent = 'Strona nie ma jeszcze klucza Web3Forms (to wiadomość dla organizatorki).';
+    if (!WORKER_READY) {
+      err.textContent = 'Skrzynka nie jest jeszcze podłączona (to wiadomość dla organizatorki).';
       return;
     }
-
-    const sent = new Date().toLocaleString('pl-PL', { dateStyle: 'long', timeStyle: 'short' });
-    // Kolejność i nazwy pól poniżej = kolejność i nazwy w mailu
     const payload = {
-      access_key: key,
+      answer: familyAnswer,
       botcheck: form.botcheck.checked,
-      subject: '🎅 List do Mikołaja – ' + d.name + ' (' + d.gifts.length + ' ' + giftWord(d.gifts.length) + ')',
-      from_name: 'Poczta Mikołaja 🦌',
-      '👤 Od kogo': d.name,
-      '🎁 Lista prezentów': giftLines(d.gifts, false),
-      '😇 Grzeczność': d.nice + '% – ' + verdictFor(d.nice),
-      '💌 Wiadomość': d.message || '(brak)',
-      '📅 Wysłano': sent
+      name: d.name,
+      nice: d.nice,
+      gifts: d.gifts,
+      message: d.message
     };
 
     btn.disabled = true;
     btn.textContent = 'Renifery w drodze…';
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
+      const res = await fetch(WORKER_URL + '/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message || 'błąd');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        const e2 = new Error(data.error || 'błąd'); e2.status = res.status; throw e2;
+      }
       $('doneNote').textContent = d.nice >= 70
         ? 'Wstępna ocena: rokowania dobre.'
         : 'Wstępna ocena: elfy jeszcze się naradzają.';
       go(DONE);
     } catch (ex) {
-      err.textContent = 'Zamieć śnieżna! List nie doleciał. Spróbuj jeszcze raz za chwilę.';
+      err.textContent = (ex.status === 429 || ex.status === 400 || ex.status === 401)
+        ? ex.message
+        : 'Zamieć śnieżna! List nie doleciał. Spróbuj jeszcze raz za chwilę.';
     } finally {
       btn.disabled = false;
       btn.textContent = 'Wyślij na Biegun';
