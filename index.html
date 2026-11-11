@@ -302,7 +302,34 @@
     .chips { grid-template-columns: 1fr 1fr; }
     .nav { justify-content: stretch; }
     .btn.primary { flex: 1; min-width: 0; }
+    /* tylko bieżący moduł – wysokość dopasowana do treści, bez pustego pola */
+    body.on-form .card-intro { display: none; }
+    body:not(.on-form) .card-form { display: none; }
+    body.on-form .card-form { animation: cardIn .45s cubic-bezier(.2,.8,.2,1); }
+    .card-form header p { display: none; }
+    .card-form header { margin-bottom: 4px; }
+    .stage { margin-top: 84px; }
+    .window { padding: 16px 16px 58px; }
+    .piesek { bottom: -160px; }
+    .myszki { bottom: -118px; }
+    .card-form h1 { font-size: 30px; }
+    .progress { margin: 0 0 8px; }
+    h2 { font-size: 26px; margin-bottom: 4px; }
+    .hint { font-size: 14px; margin-bottom: 12px; }
+    .gift { padding: 5px 6px; gap: 8px; margin-bottom: 6px; }
+    .gift-no { flex-basis: 26px; height: 26px; font-size: 13px; margin-top: 5px; }
+    .gift input[type=text] { padding: 6px 4px; }
+    .gift-del { flex-basis: 32px; height: 32px; margin-top: 2px; }
+    .add-gift { padding: 9px 12px; }
+    .sweet-note { margin-top: 10px; font-size: 13px; gap: 10px; }
+    .spark-small { width: 32px; height: 32px; flex-basis: 32px; }
+    .nav { margin-top: 14px; }
+    .meter { font-size: 48px; }
+    textarea { min-height: 90px; }
+    .check { margin-top: 12px; }
+    .summary div { padding: 7px 0; }
   }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) {
     .bombka, .big, .step.active { animation: none !important; }
     .card-intro, .card-form { transition: none !important; }
